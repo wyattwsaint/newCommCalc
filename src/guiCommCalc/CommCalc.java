@@ -1,5 +1,9 @@
 package guiCommCalc;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -11,6 +15,13 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class CommCalc {
+	
+	static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
+    static final String DB_URL = "jdbc:mariadb://192.168.100.174/db";
+
+    //  Database credentials
+    static final String USER = "root";
+    static final String PASS = "root";
 
 	public static void main(String[] args) {
 
@@ -31,7 +42,7 @@ public class CommCalc {
 	}
 
 	static void sendEmail() {
-		
+
 		String to = "wmsaint17@gmail.com";
 		String from = "wyatt.saint@aspenwindows.com";
 		String host = "smtp.gmail.com";
@@ -58,6 +69,29 @@ public class CommCalc {
 		} catch (MessagingException mex) {
 			mex.printStackTrace();
 		}
+
+	}
+
+	static void putDBData() throws ClassNotFoundException, SQLException {
+		
+		Connection conn = null;
+        Statement stmt = null;
+            //STEP 2: Register JDBC driver
+        	Class.forName("org.mariadb.jdbc.Driver");
+            
+            //STEP 3: Open a connection
+            System.out.println("Connecting to a selected database...");
+            conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/commcalc", "root", "root");
+            System.out.println("Connected database successfully...");
+
+            //STEP 4: Execute a query
+            System.out.println("Inserting task in given table...");
+            stmt = conn.createStatement();
+
+            String sql = "insert into commcalctable (Name, Product, Comments, Date, Book_Price, Sold_For, Commission) VALUES " + "('" + CommCalcGui.name + "'" + "'" + "test" + "'" + "'" + "test" + "test" + "test" + "test" + CommCalcGui.commission + "')";
+
+            stmt.executeUpdate(sql);
+            System.out.println("Inserted task in given database table...");
 
 	}
 

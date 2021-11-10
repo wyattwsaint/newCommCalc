@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,7 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class CommCalcGui extends JFrame implements ActionListener {
-
+	
 	public static String name;
 	public static int book;
 	public static int soldFor;
@@ -28,6 +29,9 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		myFrame.setLayout(new FlowLayout(FlowLayout.LEFT));
 		myFrame.setTitle("CommCalc");
 		myFrame.setPreferredSize(new Dimension(650, 250));
+		
+		nameField = new JTextField("Name");
+		nameField.setPreferredSize(new Dimension(250, 40));
 
 		bookField = new JTextField();
 		bookField.setPreferredSize(new Dimension(250, 40));
@@ -35,9 +39,6 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		soldForField = new JTextField();
 		soldForField.setPreferredSize(new Dimension(250, 40));
 		
-		nameField = new JTextField("Name");
-		nameField.setPreferredSize(new Dimension(250, 40));
-
 		commissionLabel = new JLabel();
 		commissionLabel.setPreferredSize(new Dimension(250, 40));
 
@@ -78,6 +79,14 @@ public class CommCalcGui extends JFrame implements ActionListener {
 			
 			String commissionString = String.valueOf(commission);
 			commissionLabel.setText(commissionString);
+			
+			try {
+				CommCalc.putDBData();
+			} catch (ClassNotFoundException e1) {
+				e1.printStackTrace();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 			
 		}
 
