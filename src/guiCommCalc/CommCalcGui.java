@@ -33,10 +33,10 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		nameField = new JTextField("Name");
 		nameField.setPreferredSize(new Dimension(250, 40));
 
-		bookField = new JTextField();
+		bookField = new JTextField("500");
 		bookField.setPreferredSize(new Dimension(250, 40));
 
-		soldForField = new JTextField();
+		soldForField = new JTextField("450");
 		soldForField.setPreferredSize(new Dimension(250, 40));
 		
 		commissionLabel = new JLabel();

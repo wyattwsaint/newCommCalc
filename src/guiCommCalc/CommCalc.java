@@ -88,7 +88,10 @@ public class CommCalc {
             System.out.println("Inserting task in given table...");
             stmt = conn.createStatement();
 
-            String sql = "insert into commcalctable (Name, Product, Comments, Date, Book_Price, Sold_For, Commission) VALUES " + "('" + CommCalcGui.name + "'" + "'" + "test" + "'" + "'" + "test" + "test" + "test" + "test" + CommCalcGui.commission + "')";
+            String sql = "insert into commcalctable (Name, Product, Comments, Date, Book_Price,"
+            		+ " Sold_For, Commission) VALUES " + "('" + CommCalcGui.name + "', '" + "test"
+            		+ "', '" + "test" + "', '" + "1998-03-26" + "', " + "0000" + ", " + "0000" + 
+            		", '" + CommCalcGui.commission + "')";
 
             stmt.executeUpdate(sql);
             System.out.println("Inserted task in given database table...");
