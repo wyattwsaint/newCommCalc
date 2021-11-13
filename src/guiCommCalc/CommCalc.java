@@ -1,9 +1,12 @@
 package guiCommCalc;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -15,6 +18,8 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class CommCalc {
+	
+	static String date;
 	
 	static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
     static final String DB_URL = "jdbc:mariadb://192.168.100.174/db";
@@ -71,31 +76,50 @@ public class CommCalc {
 		}
 
 	}
+	
+	static String getDate() {
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Date date1 = new Date(System.currentTimeMillis());
+		date = (formatter.format(date1));
+		return date;
+		
+	}
 
 	static void putDBData() throws ClassNotFoundException, SQLException {
 		
+		getDate();
 		Connection conn = null;
         Statement stmt = null;
-            //STEP 2: Register JDBC driver
         	Class.forName("org.mariadb.jdbc.Driver");
-            
-            //STEP 3: Open a connection
-            System.out.println("Connecting to a selected database...");
-            conn = DriverManager.getConnection("jdbc:mariadb://localhost:3306/commcalc", "root", "root");
-            System.out.println("Connected database successfully...");
-
-            //STEP 4: Execute a query
-            System.out.println("Inserting task in given table...");
+            conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1/commcalc", "root", "root");
             stmt = conn.createStatement();
-
             String sql = "insert into commcalctable (Name, Product, Comments, Date, Book_Price,"
-            		+ " Sold_For, Commission) VALUES " + "('" + CommCalcGui.name + "', '" + "test"
-            		+ "', '" + "test" + "', '" + "1998-03-26" + "', " + "0000" + ", " + "0000" + 
-            		", '" + CommCalcGui.commission + "')";
-
+            		+ " Sold_For, Commission) VALUES " + "('" + CommCalcGui.name + "', '" 
+            		+ CommCalcGui.product + "', '" + CommCalcGui.comments + "', '" + date + "', "
+            		+ CommCalcGui.book + ", " + CommCalcGui.soldFor + ", '" + CommCalcGui.commission 
+            		+ "')";
             stmt.executeUpdate(sql);
-            System.out.println("Inserted task in given database table...");
 
+	}
+	
+	public static int addCurrentMonthCommissionsFromDB() throws ClassNotFoundException, SQLException {
+		
+		Connection conn = null;
+        Statement stmt = null;
+        	Class.forName("org.mariadb.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1/commcalc", "root", "root");
+            stmt = conn.createStatement();
+            ResultSet rs;
+            String sql = "SELECT SUM(Commission) as total FROM commcalctable WHERE MONTH(Date) = "
+            		+ "MONTH(CURRENT_DATE());";
+            rs = stmt.executeQuery(sql);
+            if (rs.next()) {
+            	CommCalcGui.totalCommissions = rs.getInt("total");
+            }
+		return CommCalcGui.totalCommissions;
+		
+				
 	}
 
 }
