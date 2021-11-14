@@ -19,6 +19,8 @@ import javax.mail.internet.MimeMessage;
 
 public class CommCalc {
 
+	static int zeros;
+	static int ones;
 	static String date;
 
 	public static void main(String[] args) {
@@ -39,7 +41,7 @@ public class CommCalc {
 
 	}
 
-	static void sendEmail() {
+	static void sendEmail(String messageVariable, String soldStatus) {
 
 		String to = "wmsaint17@gmail.com";
 		String from = "wyatt.saint@aspenwindows.com";
@@ -59,8 +61,8 @@ public class CommCalc {
 			MimeMessage message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(from));
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-			message.setSubject("SOLD!!");
-			message.setText(String.valueOf("message"));
+			message.setSubject(soldStatus);
+			message.setText(String.valueOf(messageVariable));
 			System.out.println("sending...");
 			Transport.send(message);
 			System.out.println("Sent message successfully....");
@@ -149,6 +151,34 @@ public class CommCalc {
 
 	}
 	
+	static int getCloseRateFromDB() throws ClassNotFoundException, SQLException {
+		
+		double totalNumberOfSales;
+		double rawCloseRate;
+		Connection conn = null;
+		Statement stmt = null;
+		Class.forName("org.mariadb.jdbc.Driver");
+		conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1/commcalc", "root", "root");
+		stmt = conn.createStatement();
+		ResultSet rs;
+		String sql = "SELECT COUNT(sold) AS count FROM commcalctable WHERE sold = 0 AND MONTH(Date) = "
+				+ "MONTH(CURRENT_DATE());";
+		rs = stmt.executeQuery(sql);
+		if (rs.next()) {
+			zeros = rs.getInt("count");
+		}
+		String sql2 = "SELECT COUNT(sold) AS count FROM commcalctable WHERE sold = 1 AND MONTH(Date) = "
+				+ "MONTH(CURRENT_DATE());";
+		rs = stmt.executeQuery(sql2);
+		if (rs.next()) {
+			ones = rs.getInt("count");
+		}
+		totalNumberOfSales = zeros + ones;
+		rawCloseRate = ones / totalNumberOfSales * 100;
+		CommCalcGui.closeRate = (int) rawCloseRate;
+		System.out.println(CommCalcGui.closeRate);
+		return CommCalcGui.closeRate;
+		
+	}
 	
-
 }

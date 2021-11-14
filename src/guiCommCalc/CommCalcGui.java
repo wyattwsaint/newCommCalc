@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -19,11 +20,12 @@ public class CommCalcGui extends JFrame implements ActionListener {
 
 	public static JFrame myFrame;
 	public static String name, product, comments, credit;
-	public static int book, soldFor, commission, totalCommissions, totalSales, notSold;
+	public static int book, soldFor, commission, totalCommissions, totalSales, notSold, closeRate;
 	public static JButton submitButton, noSaleButton;
 	public static JTextField bookField, soldForField, nameField, commentsField, productField, creditField;
 	public static JLabel commissionLabel, monthlyCommissionLabel, monthlySalesLabel, nameLabel, productLabel, commentsLabel, bookLabel, soldForLabel, commissionDescriptionLabel, monthlyCommissionDescriptionLabel, monthlySalesDescriptionLabel, creditLabel, closeRateLabel, closeRateDescriptionLabel;
 	public static JPanel panel, panel2, panel3, panel4;
+	public static JOptionPane closeRatePane;
 
 	CommCalcGui() {
 
@@ -125,6 +127,9 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		noSaleButton.setBackground(Color.yellow);
 		noSaleButton.setFocusable(false);
 		noSaleButton.addActionListener(this);
+		
+		closeRatePane = new JOptionPane();
+		closeRatePane.setPreferredSize(new Dimension(50, 20));
 
 		panel = new JPanel();
 		panel.setPreferredSize(new Dimension(300, 300));
@@ -142,7 +147,6 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		panel4.setPreferredSize(new Dimension(200, 300));
 		panel4.setLayout(new FlowLayout());
 		panel4.setBackground(Color.black);
-
 
 		panel.add(nameField);
 		panel.add(productField);
@@ -221,11 +225,33 @@ public class CommCalcGui extends JFrame implements ActionListener {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-
+			
+			try {
+				CommCalc.getCloseRateFromDB();
+			} catch (ClassNotFoundException | SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			String closeRateString = String.valueOf(closeRate);
+			closeRateLabel.setText(closeRateString + "%");
+			
 		}
 
 		else if (e.getSource() == noSaleButton) {
 
+			try {
+				CommCalc.getCloseRateFromDB();
+			} catch (ClassNotFoundException | SQLException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			
+			closeRatePane = new JOptionPane();
+			closeRatePane.setPreferredSize(new Dimension(50, 20));
+			closeRatePane.showMessageDialog(myFrame, "Next!  Closing rate: " + closeRate + "%");
+			closeRatePane.setVisible(true);
+			
 			try {
 				CommCalc.noSale();
 			} catch (ClassNotFoundException | SQLException e1) {
