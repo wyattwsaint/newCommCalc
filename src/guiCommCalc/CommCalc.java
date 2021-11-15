@@ -1,5 +1,6 @@
 package guiCommCalc;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -23,7 +24,7 @@ public class CommCalc {
 	static int ones;
 	static String date;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		CommCalcGui run = new CommCalcGui();
 	}

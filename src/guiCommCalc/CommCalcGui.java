@@ -6,8 +6,13 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,21 +26,27 @@ public class CommCalcGui extends JFrame implements ActionListener {
 	public static JFrame myFrame;
 	public static String name, product, comments, credit;
 	public static int book, soldFor, commission, totalCommissions, totalSales, notSold, closeRate;
-	public static JButton submitButton, noSaleButton;
+	public static JButton submitButton, noSaleButton, viewRecordsButton;
 	public static JTextField bookField, soldForField, nameField, commentsField, productField, creditField;
-	public static JLabel commissionLabel, monthlyCommissionLabel, monthlySalesLabel, nameLabel, productLabel, commentsLabel, bookLabel, soldForLabel, commissionDescriptionLabel, monthlyCommissionDescriptionLabel, monthlySalesDescriptionLabel, creditLabel, closeRateLabel, closeRateDescriptionLabel;
-	public static JPanel panel, panel2, panel3, panel4;
+	public static JLabel commissionLabel, monthlyCommissionLabel, monthlySalesLabel, nameLabel, productLabel, commentsLabel, bookLabel, soldForLabel, commissionDescriptionLabel, monthlyCommissionDescriptionLabel, monthlySalesDescriptionLabel, creditLabel, closeRateLabel, closeRateDescriptionLabel, handshakeLabel;
+	public static JPanel panel, panel2, panel3, panel4, panel5, panel6;
 	public static JOptionPane closeRatePane;
+	public static ImageIcon handshakeImage;
+	public static ImageIcon mainPanePic;
+	public static BufferedImage myPicture;
 
-	CommCalcGui() {
+	CommCalcGui() throws IOException {
+		
+		mainPanePic = new ImageIcon("C:\\Users\\wmsai\\Desktop\\CommCalc.png");
 
 		myFrame = new JFrame();
 		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		myFrame.setLayout(new FlowLayout(FlowLayout.LEFT));
 		myFrame.setTitle("CommCalc");
-		myFrame.setPreferredSize(new Dimension(535, 650));
+		myFrame.setPreferredSize(new Dimension(1100, 650));
 		myFrame.getContentPane().setBackground(Color.black);
 		myFrame.setResizable(false);
+		myFrame.setIconImage(mainPanePic.getImage());
 		
 		nameField = new JTextField("Name");
 		nameField.setPreferredSize(new Dimension(250, 40));
@@ -116,7 +127,10 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		closeRateLabel.setFont(new Font("Serif", Font.PLAIN, 25));
 		closeRateLabel.setForeground(Color.yellow);
 		closeRateLabel.setHorizontalAlignment(SwingConstants.CENTER);
-
+		myPicture = ImageIO.read(new File("C:\\Users\\wmsai\\Desktop\\CommCalc.png"));
+		handshakeLabel = new JLabel(new ImageIcon(myPicture));
+		handshakeLabel.setVerticalAlignment(SwingConstants.CENTER);
+		
 		submitButton = new JButton("Submit");
 		submitButton.setPreferredSize(new Dimension(250, 40));
 		submitButton.setBackground(Color.yellow);
@@ -124,9 +138,15 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		submitButton.addActionListener(this);
 		noSaleButton = new JButton("No Sale");
 		noSaleButton.setPreferredSize(new Dimension(250, 40));
-		noSaleButton.setBackground(Color.yellow);
+		noSaleButton.setBackground(Color.MAGENTA);
 		noSaleButton.setFocusable(false);
 		noSaleButton.addActionListener(this);
+		viewRecordsButton = new JButton("View/Add/Delete Records");
+		viewRecordsButton.setPreferredSize(new Dimension(250, 40));
+		viewRecordsButton.setBackground(Color.yellow);
+		viewRecordsButton.setFocusable(false);
+		viewRecordsButton.addActionListener(this);
+		
 		
 		closeRatePane = new JOptionPane();
 		closeRatePane.setPreferredSize(new Dimension(50, 20));
@@ -147,6 +167,15 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		panel4.setPreferredSize(new Dimension(200, 300));
 		panel4.setLayout(new FlowLayout());
 		panel4.setBackground(Color.black);
+		panel5 = new JPanel();
+		panel5.setPreferredSize(new Dimension(535, 650));
+		panel5.setLayout(new FlowLayout());
+		panel5.setBackground(Color.black);
+		
+		panel6 = new JPanel();
+		panel6.setPreferredSize(new Dimension(535, 650));
+		panel6.setLayout(new FlowLayout());
+		panel6.setBackground(Color.black);
 
 		panel.add(nameField);
 		panel.add(productField);
@@ -164,6 +193,7 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		panel3.add(monthlyCommissionDescriptionLabel);
 		panel3.add(monthlySalesDescriptionLabel);
 		panel3.add(closeRateDescriptionLabel);
+		panel3.add(viewRecordsButton);
 		panel4.add(nameLabel);
 		panel4.add(productLabel);
 		panel4.add(commentsLabel);
@@ -171,10 +201,15 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		panel4.add(bookLabel);
 		panel4.add(soldForLabel);
 		
-		myFrame.add(panel4);
-		myFrame.add(panel);
-		myFrame.add(panel3);
-		myFrame.add(panel2);
+		panel5.add(panel4);
+		panel5.add(panel);
+		panel5.add(panel3);
+		panel5.add(panel2);
+		
+		panel6.add(handshakeLabel);
+		
+		myFrame.add(panel5);
+		myFrame.add(panel6);
 		myFrame.pack();
 		myFrame.setLocationRelativeTo(null);
 		myFrame.setVisible(true);
