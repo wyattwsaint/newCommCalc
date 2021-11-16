@@ -9,7 +9,11 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -23,13 +27,13 @@ import javax.swing.SwingConstants;
 
 public class CommCalcGui extends JFrame implements ActionListener {
 
-	public static JFrame myFrame;
+	public static JFrame myFrame, recordsFrame;
 	public static String name, product, comments, credit;
 	public static int book, soldFor, commission, totalCommissions, totalSales, notSold, closeRate;
 	public static JButton submitButton, noSaleButton, viewRecordsButton;
 	public static JTextField bookField, soldForField, nameField, commentsField, productField, creditField;
 	public static JLabel commissionLabel, monthlyCommissionLabel, monthlySalesLabel, nameLabel, productLabel, commentsLabel, bookLabel, soldForLabel, commissionDescriptionLabel, monthlyCommissionDescriptionLabel, monthlySalesDescriptionLabel, creditLabel, closeRateLabel, closeRateDescriptionLabel, handshakeLabel;
-	public static JPanel panel, panel2, panel3, panel4, panel5, panel6;
+	public static JPanel panel, panel2, panel3, panel4, panel5, panel6, recordsPanel1;
 	public static JOptionPane closeRatePane;
 	public static ImageIcon handshakeImage;
 	public static ImageIcon mainPanePic;
@@ -47,6 +51,13 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		myFrame.getContentPane().setBackground(Color.black);
 		myFrame.setResizable(false);
 		myFrame.setIconImage(mainPanePic.getImage());
+		recordsFrame = new JFrame();
+		recordsFrame.setLayout(new FlowLayout(FlowLayout.LEFT));
+		recordsFrame.setTitle("CommCalc Records");
+		recordsFrame.setPreferredSize(new Dimension(900, 600));
+		recordsFrame.getContentPane().setBackground(Color.black);
+		recordsFrame.setResizable(false);
+		recordsFrame.setIconImage(mainPanePic.getImage());
 		
 		nameField = new JTextField("Name");
 		nameField.setPreferredSize(new Dimension(250, 40));
@@ -147,7 +158,6 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		viewRecordsButton.setFocusable(false);
 		viewRecordsButton.addActionListener(this);
 		
-		
 		closeRatePane = new JOptionPane();
 		closeRatePane.setPreferredSize(new Dimension(50, 20));
 
@@ -171,11 +181,15 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		panel5.setPreferredSize(new Dimension(535, 650));
 		panel5.setLayout(new FlowLayout());
 		panel5.setBackground(Color.black);
-		
 		panel6 = new JPanel();
 		panel6.setPreferredSize(new Dimension(535, 650));
 		panel6.setLayout(new FlowLayout());
 		panel6.setBackground(Color.black);
+		recordsPanel1 = new JPanel();
+		recordsPanel1.setPreferredSize(new Dimension(800, 575));
+		recordsPanel1.setLayout(new FlowLayout());
+		recordsPanel1.setBackground(Color.gray);
+		
 
 		panel.add(nameField);
 		panel.add(productField);
@@ -227,7 +241,9 @@ public class CommCalcGui extends JFrame implements ActionListener {
 
 			name = nameField.getText();
 			product = productField.getText();
-			comments = commentsField.getText();
+			String commentsStripApostrophes = commentsField.getText().replace("'", "");
+			comments = commentsStripApostrophes;
+			
 
 			CommCalc.commissionCalculation(book, soldFor);
 
@@ -295,6 +311,38 @@ public class CommCalcGui extends JFrame implements ActionListener {
 			}
 			
 			myFrame.dispose();
+		}
+		
+		else if (e.getSource() == viewRecordsButton) {
+			
+			recordsFrame.add(recordsPanel1);
+			recordsFrame.pack();
+			recordsFrame.setLocationRelativeTo(null);
+			recordsFrame.setVisible(true);
+			
+			try {
+				
+			Connection conn = null;
+			Statement stmt = null;
+			try {
+				Class.forName("org.mariadb.jdbc.Driver");
+			} catch (ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1/commcalc", "root", "root");
+			stmt = conn.createStatement();
+			ResultSet rs;
+			String sql = "SELECT * FROM commcalctable";
+			rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				
+			}
+			}
+			catch (SQLException ee) {
+				ee.printStackTrace();
+			}
+			
 		}
 
 	}
