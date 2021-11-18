@@ -22,8 +22,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 
 public class CommCalcGui extends JFrame implements ActionListener {
 
@@ -32,15 +35,18 @@ public class CommCalcGui extends JFrame implements ActionListener {
 	public static int book, soldFor, commission, totalCommissions, totalSales, notSold, closeRate;
 	public static JButton submitButton, noSaleButton, viewRecordsButton;
 	public static JTextField bookField, soldForField, nameField, commentsField, productField, creditField;
-	public static JLabel commissionLabel, monthlyCommissionLabel, monthlySalesLabel, nameLabel, productLabel, commentsLabel, bookLabel, soldForLabel, commissionDescriptionLabel, monthlyCommissionDescriptionLabel, monthlySalesDescriptionLabel, creditLabel, closeRateLabel, closeRateDescriptionLabel, handshakeLabel;
+	public static JLabel commissionLabel, monthlyCommissionLabel, monthlySalesLabel, nameLabel, productLabel,
+			commentsLabel, bookLabel, soldForLabel, commissionDescriptionLabel, monthlyCommissionDescriptionLabel,
+			monthlySalesDescriptionLabel, creditLabel, closeRateLabel, closeRateDescriptionLabel, handshakeLabel;
 	public static JPanel panel, panel2, panel3, panel4, panel5, panel6, recordsPanel1;
 	public static JOptionPane closeRatePane;
 	public static ImageIcon handshakeImage;
 	public static ImageIcon mainPanePic;
 	public static BufferedImage myPicture;
+	public static JScrollPane pane;
 
 	CommCalcGui() throws IOException {
-		
+
 		mainPanePic = new ImageIcon("C:\\Users\\wmsai\\Desktop\\CommCalc.png");
 
 		myFrame = new JFrame();
@@ -58,7 +64,7 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		recordsFrame.getContentPane().setBackground(Color.black);
 		recordsFrame.setResizable(false);
 		recordsFrame.setIconImage(mainPanePic.getImage());
-		
+
 		nameField = new JTextField("Name");
 		nameField.setPreferredSize(new Dimension(250, 40));
 		nameField.setHorizontalAlignment(SwingConstants.CENTER);
@@ -141,7 +147,7 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		myPicture = ImageIO.read(new File("C:\\Users\\wmsai\\Desktop\\CommCalc.png"));
 		handshakeLabel = new JLabel(new ImageIcon(myPicture));
 		handshakeLabel.setVerticalAlignment(SwingConstants.CENTER);
-		
+
 		submitButton = new JButton("Submit");
 		submitButton.setPreferredSize(new Dimension(250, 40));
 		submitButton.setBackground(Color.yellow);
@@ -157,7 +163,7 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		viewRecordsButton.setBackground(Color.yellow);
 		viewRecordsButton.setFocusable(false);
 		viewRecordsButton.addActionListener(this);
-		
+
 		closeRatePane = new JOptionPane();
 		closeRatePane.setPreferredSize(new Dimension(50, 20));
 
@@ -189,7 +195,6 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		recordsPanel1.setPreferredSize(new Dimension(800, 575));
 		recordsPanel1.setLayout(new FlowLayout());
 		recordsPanel1.setBackground(Color.gray);
-		
 
 		panel.add(nameField);
 		panel.add(productField);
@@ -214,14 +219,14 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		panel4.add(creditLabel);
 		panel4.add(bookLabel);
 		panel4.add(soldForLabel);
-		
+
 		panel5.add(panel4);
 		panel5.add(panel);
 		panel5.add(panel3);
 		panel5.add(panel2);
-		
+
 		panel6.add(handshakeLabel);
-		
+
 		myFrame.add(panel5);
 		myFrame.add(panel6);
 		myFrame.pack();
@@ -243,7 +248,6 @@ public class CommCalcGui extends JFrame implements ActionListener {
 			product = productField.getText();
 			String commentsStripApostrophes = commentsField.getText().replace("'", "");
 			comments = commentsStripApostrophes;
-			
 
 			CommCalc.commissionCalculation(book, soldFor);
 
@@ -276,17 +280,17 @@ public class CommCalcGui extends JFrame implements ActionListener {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			
+
 			try {
 				CommCalc.getCloseRateFromDB();
 			} catch (ClassNotFoundException | SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			
+
 			String closeRateString = String.valueOf(closeRate);
 			closeRateLabel.setText(closeRateString + "%");
-			
+
 		}
 
 		else if (e.getSource() == noSaleButton) {
@@ -297,52 +301,83 @@ public class CommCalcGui extends JFrame implements ActionListener {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
-			
+
 			closeRatePane = new JOptionPane();
 			closeRatePane.setPreferredSize(new Dimension(50, 20));
 			closeRatePane.showMessageDialog(myFrame, "Next!  Closing rate: " + closeRate + "%");
 			closeRatePane.setVisible(true);
-			
+
 			try {
 				CommCalc.noSale();
 			} catch (ClassNotFoundException | SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			
+
 			myFrame.dispose();
 		}
-		
+
 		else if (e.getSource() == viewRecordsButton) {
-			
-			recordsFrame.add(recordsPanel1);
-			recordsFrame.pack();
-			recordsFrame.setLocationRelativeTo(null);
-			recordsFrame.setVisible(true);
-			
+
 			try {
+
+				Connection conn = null;
+				Statement stmt = null;
+				try {
+					Class.forName("org.mariadb.jdbc.Driver");
+				} catch (ClassNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1/commcalc", "root", "root");
+				stmt = conn.createStatement();
+				ResultSet rs;
+				String sql = "SELECT * FROM commcalctable";
+				rs = stmt.executeQuery(sql);
+
+				String columns[] = { "id", "Name", "Product", "Comments", "Date", "Book", "Sold_For", "Commission" };
+				String data[][] = new String[40][8];
+
+				int i = 0;
+				while (rs.next()) {
+
+					String id = rs.getString("id");
+					String name = rs.getString("Name");
+					String product = rs.getString("Product");
+					String comments = rs.getString("Comments");
+					String date = rs.getString("Date");
+					String book = rs.getString("Book_Price");
+					String soldfor = rs.getString("Sold_For");
+					String commission = rs.getString("Commission");
+					data[i][0] = id;
+					data[i][1] = name;
+					data[i][2] = product;
+					data[i][3] = comments;
+					data[i][4] = date;
+					data[i][5] = book;
+					data[i][6] = soldfor;
+					data[i][7] = commission;
+
+					i++;
+
+				}
+				DefaultTableModel model = new DefaultTableModel(data, columns);
+				JTable table = new JTable(model);
+				table.setShowGrid(true);
+				table.setShowVerticalLines(true);
+				pane = new JScrollPane(table);
 				
-			Connection conn = null;
-			Statement stmt = null;
-			try {
-				Class.forName("org.mariadb.jdbc.Driver");
-			} catch (ClassNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1/commcalc", "root", "root");
-			stmt = conn.createStatement();
-			ResultSet rs;
-			String sql = "SELECT * FROM commcalctable";
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				
-			}
-			}
-			catch (SQLException ee) {
+			} catch (SQLException ee) {
 				ee.printStackTrace();
 			}
 			
+			recordsPanel1.add(pane);
+			recordsFrame.add(recordsPanel1);
+			recordsFrame.setPreferredSize(new Dimension(830, 630));
+			recordsFrame.pack();
+			recordsFrame.setLocationRelativeTo(null);
+			recordsFrame.setVisible(true);
+
 		}
 
 	}
