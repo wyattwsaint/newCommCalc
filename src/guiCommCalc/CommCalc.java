@@ -1,5 +1,7 @@
 package guiCommCalc;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
@@ -17,6 +19,12 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 public class CommCalc {
 
@@ -180,6 +188,83 @@ public class CommCalc {
 		System.out.println(CommCalcGui.closeRate);
 		return CommCalcGui.closeRate;
 		
+	}
+	
+	static JTable createRecordsTable() {
+		
+		try {
+
+			Connection conn = null;
+			Statement stmt = null;
+			try {
+				Class.forName("org.mariadb.jdbc.Driver");
+			} catch (ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1/commcalc", "root", "root");
+			stmt = conn.createStatement();
+			ResultSet rs;
+			String sql = "SELECT * FROM commcalctable";
+			rs = stmt.executeQuery(sql);
+
+			String columns[] = { "id", "Name", "Product", "Comments", "Date", "Book", "Sold_For", "Commission" };
+			String data[][] = new String[70][8];
+
+			int i = 0;
+			while (rs.next()) {
+
+				String id = rs.getString("id");
+				String name = rs.getString("Name");
+				String product = rs.getString("Product");
+				String comments = rs.getString("Comments");
+				String date = rs.getString("Date");
+				String book = rs.getString("Book_Price");
+				String soldfor = rs.getString("Sold_For");
+				String commission = rs.getString("Commission");
+				data[i][0] = id;
+				data[i][1] = name;
+				data[i][2] = product;
+				data[i][3] = comments;
+				data[i][4] = date;
+				data[i][5] = book;
+				data[i][6] = soldfor;
+				data[i][7] = commission;
+
+				i++;
+
+			}
+			
+			DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+			centerRenderer.setHorizontalAlignment( SwingConstants.CENTER );
+			DefaultTableModel model = new DefaultTableModel(data, columns);
+			CommCalcGui.table = new JTable(model);
+			CommCalcGui.table.setShowGrid(true);
+			CommCalcGui.table.setShowVerticalLines(true);
+			CommCalcGui.table.setGridColor(Color.yellow);
+			CommCalcGui.table.setBackground(Color.black);
+			CommCalcGui.table.setForeground(Color.yellow);
+			CommCalcGui.table.setDefaultRenderer(String.class, centerRenderer);
+			CommCalcGui.table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+			
+			TableColumnModel columnModel = CommCalcGui.table.getColumnModel();
+		    for (int column = 0; column < 8; column++) {
+		        int width = 15; // Min width
+		        for (int row = 0; row < CommCalcGui.table.getRowCount(); row++) {
+		            TableCellRenderer renderer = CommCalcGui.table.getCellRenderer(row, column);
+		            Component comp = CommCalcGui.table.prepareRenderer(renderer, row, column);
+		            width = Math.max(comp.getPreferredSize().width +1 , width);
+		            columnModel.getColumn(column).setPreferredWidth(width);
+		        }
+		    }
+		    for(int x=0;x<8;x++){
+		    	CommCalcGui.table.getColumnModel().getColumn(x).setCellRenderer( centerRenderer );
+		        }
+		
+		} catch (SQLException ee) {
+			ee.printStackTrace();
+		}
+		return CommCalcGui.table;
 	}
 	
 }

@@ -9,11 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -26,24 +22,24 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableModel;
 
 public class CommCalcGui extends JFrame implements ActionListener {
 
 	public static JFrame myFrame, recordsFrame;
 	public static String name, product, comments, credit;
 	public static int book, soldFor, commission, totalCommissions, totalSales, notSold, closeRate;
-	public static JButton submitButton, noSaleButton, viewRecordsButton;
+	public static JButton submitButton, noSaleButton, viewRecordsButton, addRecordButton, deleteRecordButton;
 	public static JTextField bookField, soldForField, nameField, commentsField, productField, creditField;
 	public static JLabel commissionLabel, monthlyCommissionLabel, monthlySalesLabel, nameLabel, productLabel,
 			commentsLabel, bookLabel, soldForLabel, commissionDescriptionLabel, monthlyCommissionDescriptionLabel,
 			monthlySalesDescriptionLabel, creditLabel, closeRateLabel, closeRateDescriptionLabel, handshakeLabel;
-	public static JPanel panel, panel2, panel3, panel4, panel5, panel6, recordsPanel1;
+	public static JPanel panel, panel2, panel3, panel4, panel5, panel6, recordsPanel1, recordsPanel2;
 	public static JOptionPane closeRatePane;
 	public static ImageIcon handshakeImage;
 	public static ImageIcon mainPanePic;
 	public static BufferedImage myPicture;
 	public static JScrollPane pane;
+	public static JTable table;
 
 	CommCalcGui() throws IOException {
 
@@ -62,7 +58,7 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		recordsFrame.setTitle("CommCalc Records");
 		recordsFrame.setPreferredSize(new Dimension(900, 600));
 		recordsFrame.getContentPane().setBackground(Color.black);
-		recordsFrame.setResizable(false);
+		recordsFrame.setResizable(true);
 		recordsFrame.setIconImage(mainPanePic.getImage());
 
 		nameField = new JTextField("Name");
@@ -155,7 +151,7 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		submitButton.addActionListener(this);
 		noSaleButton = new JButton("No Sale");
 		noSaleButton.setPreferredSize(new Dimension(250, 40));
-		noSaleButton.setBackground(Color.MAGENTA);
+		noSaleButton.setBackground(Color.lightGray);
 		noSaleButton.setFocusable(false);
 		noSaleButton.addActionListener(this);
 		viewRecordsButton = new JButton("View/Add/Delete Records");
@@ -163,6 +159,16 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		viewRecordsButton.setBackground(Color.yellow);
 		viewRecordsButton.setFocusable(false);
 		viewRecordsButton.addActionListener(this);
+		addRecordButton = new JButton("Add record");
+		addRecordButton.setPreferredSize(new Dimension(250, 40));
+		addRecordButton.setBackground(Color.yellow);
+		addRecordButton.setFocusable(false);
+		addRecordButton.addActionListener(this);
+		deleteRecordButton = new JButton("Delete record");
+		deleteRecordButton.setPreferredSize(new Dimension(250, 40));
+		deleteRecordButton.setBackground(Color.yellow);
+		deleteRecordButton.setFocusable(false);
+		deleteRecordButton.addActionListener(this);
 
 		closeRatePane = new JOptionPane();
 		closeRatePane.setPreferredSize(new Dimension(50, 20));
@@ -192,9 +198,13 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		panel6.setLayout(new FlowLayout());
 		panel6.setBackground(Color.black);
 		recordsPanel1 = new JPanel();
-		recordsPanel1.setPreferredSize(new Dimension(800, 575));
+		recordsPanel1.setPreferredSize(new Dimension(800, 535));
 		recordsPanel1.setLayout(new FlowLayout());
-		recordsPanel1.setBackground(Color.gray);
+		recordsPanel1.setBackground(Color.black);
+		recordsPanel2 = new JPanel();
+		recordsPanel2.setPreferredSize(new Dimension(800, 55));
+		recordsPanel2.setLayout(new FlowLayout());
+		recordsPanel2.setBackground(Color.black);
 
 		panel.add(nameField);
 		panel.add(productField);
@@ -318,61 +328,17 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		}
 
 		else if (e.getSource() == viewRecordsButton) {
+			
+			CommCalc.createRecordsTable();
 
-			try {
-
-				Connection conn = null;
-				Statement stmt = null;
-				try {
-					Class.forName("org.mariadb.jdbc.Driver");
-				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1/commcalc", "root", "root");
-				stmt = conn.createStatement();
-				ResultSet rs;
-				String sql = "SELECT * FROM commcalctable";
-				rs = stmt.executeQuery(sql);
-
-				String columns[] = { "id", "Name", "Product", "Comments", "Date", "Book", "Sold_For", "Commission" };
-				String data[][] = new String[40][8];
-
-				int i = 0;
-				while (rs.next()) {
-
-					String id = rs.getString("id");
-					String name = rs.getString("Name");
-					String product = rs.getString("Product");
-					String comments = rs.getString("Comments");
-					String date = rs.getString("Date");
-					String book = rs.getString("Book_Price");
-					String soldfor = rs.getString("Sold_For");
-					String commission = rs.getString("Commission");
-					data[i][0] = id;
-					data[i][1] = name;
-					data[i][2] = product;
-					data[i][3] = comments;
-					data[i][4] = date;
-					data[i][5] = book;
-					data[i][6] = soldfor;
-					data[i][7] = commission;
-
-					i++;
-
-				}
-				DefaultTableModel model = new DefaultTableModel(data, columns);
-				JTable table = new JTable(model);
-				table.setShowGrid(true);
-				table.setShowVerticalLines(true);
-				pane = new JScrollPane(table);
-				
-			} catch (SQLException ee) {
-				ee.printStackTrace();
-			}
+			pane = new JScrollPane(table);
+			pane.setPreferredSize(new Dimension(775, 525));
 			
 			recordsPanel1.add(pane);
+			recordsPanel2.add(addRecordButton);
+			recordsPanel2.add(deleteRecordButton);
 			recordsFrame.add(recordsPanel1);
+			recordsFrame.add(recordsPanel2);
 			recordsFrame.setPreferredSize(new Dimension(830, 630));
 			recordsFrame.pack();
 			recordsFrame.setLocationRelativeTo(null);
