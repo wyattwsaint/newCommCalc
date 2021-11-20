@@ -2,6 +2,7 @@ package guiCommCalc;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
@@ -19,6 +20,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -141,7 +143,7 @@ public class CommCalc {
 		return CommCalcGui.totalSales;
 
 	}
-	
+
 	static int noSale() throws ClassNotFoundException, SQLException {
 
 		getDate();
@@ -152,16 +154,16 @@ public class CommCalc {
 		conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1/commcalc", "root", "root");
 		stmt = conn.createStatement();
 		String sql = "insert into commcalctable (Name, Product, Comments, Date, Book_Price,"
-				+ " Sold_For, Commission, Sold) VALUES " + "('"+ "No Sale" + "', '" + "No Sale" + "', '" + "No Sale" + "', '" + date + "', " + "0" + ", " + "0"
-				+ ", '" + "0" + "', " + CommCalcGui.notSold + ")";
+				+ " Sold_For, Commission, Sold) VALUES " + "('" + "No Sale" + "', '" + "No Sale" + "', '" + "No Sale"
+				+ "', '" + date + "', " + "0" + ", " + "0" + ", '" + "0" + "', " + CommCalcGui.notSold + ")";
 		stmt.executeUpdate(sql);
-		
+
 		return CommCalcGui.notSold;
 
 	}
-	
+
 	static int getCloseRateFromDB() throws ClassNotFoundException, SQLException {
-		
+
 		double totalNumberOfSales;
 		double rawCloseRate;
 		Connection conn = null;
@@ -187,11 +189,11 @@ public class CommCalc {
 		CommCalcGui.closeRate = (int) rawCloseRate;
 		System.out.println(CommCalcGui.closeRate);
 		return CommCalcGui.closeRate;
-		
+
 	}
-	
+
 	static JTable createRecordsTable() {
-		
+
 		try {
 
 			Connection conn = null;
@@ -234,9 +236,9 @@ public class CommCalc {
 				i++;
 
 			}
-			
+
 			DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-			centerRenderer.setHorizontalAlignment( SwingConstants.CENTER );
+			centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 			DefaultTableModel model = new DefaultTableModel(data, columns);
 			CommCalcGui.table = new JTable(model);
 			CommCalcGui.table.setShowGrid(true);
@@ -246,25 +248,34 @@ public class CommCalc {
 			CommCalcGui.table.setForeground(Color.yellow);
 			CommCalcGui.table.setDefaultRenderer(String.class, centerRenderer);
 			CommCalcGui.table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-			
+
 			TableColumnModel columnModel = CommCalcGui.table.getColumnModel();
-		    for (int column = 0; column < 8; column++) {
-		        int width = 15; // Min width
-		        for (int row = 0; row < CommCalcGui.table.getRowCount(); row++) {
-		            TableCellRenderer renderer = CommCalcGui.table.getCellRenderer(row, column);
-		            Component comp = CommCalcGui.table.prepareRenderer(renderer, row, column);
-		            width = Math.max(comp.getPreferredSize().width +1 , width);
-		            columnModel.getColumn(column).setPreferredWidth(width);
-		        }
-		    }
-		    for(int x=0;x<8;x++){
-		    	CommCalcGui.table.getColumnModel().getColumn(x).setCellRenderer( centerRenderer );
-		        }
-		
+			for (int column = 0; column < 8; column++) {
+				int width = 15; // Min width
+				for (int row = 0; row < CommCalcGui.table.getRowCount(); row++) {
+					TableCellRenderer renderer = CommCalcGui.table.getCellRenderer(row, column);
+					Component comp = CommCalcGui.table.prepareRenderer(renderer, row, column);
+					width = Math.max(comp.getPreferredSize().width + 1, width);
+					columnModel.getColumn(column).setPreferredWidth(width);
+				}
+			}
+			for (int x = 0; x < 8; x++) {
+				CommCalcGui.table.getColumnModel().getColumn(x).setCellRenderer(centerRenderer);
+			}
+
+			CommCalcGui.pane = new JScrollPane(CommCalcGui.table);
+			CommCalcGui.pane.setPreferredSize(new Dimension(775, 525));
+
 		} catch (SQLException ee) {
 			ee.printStackTrace();
 		}
 		return CommCalcGui.table;
 	}
 	
+	static void addRecord() {
+		
+		
+		
+	}
+
 }

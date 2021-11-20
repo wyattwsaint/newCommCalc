@@ -22,19 +22,23 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 
 public class CommCalcGui extends JFrame implements ActionListener {
 
-	public static JFrame myFrame, recordsFrame;
+	public static JFrame myFrame, recordsFrame, addRecordFrame, deleteRecordFrame;
 	public static String name, product, comments, credit;
 	public static int book, soldFor, commission, totalCommissions, totalSales, notSold, closeRate;
-	public static JButton submitButton, noSaleButton, viewRecordsButton, addRecordButton, deleteRecordButton;
+	public static JButton submitButton, noSaleButton, viewRecordsButton, addRecordButton, deleteRecordButton,
+			recordSubmitButton;
 	public static JTextField bookField, soldForField, nameField, commentsField, productField, creditField;
 	public static JLabel commissionLabel, monthlyCommissionLabel, monthlySalesLabel, nameLabel, productLabel,
 			commentsLabel, bookLabel, soldForLabel, commissionDescriptionLabel, monthlyCommissionDescriptionLabel,
 			monthlySalesDescriptionLabel, creditLabel, closeRateLabel, closeRateDescriptionLabel, handshakeLabel;
-	public static JPanel panel, panel2, panel3, panel4, panel5, panel6, recordsPanel1, recordsPanel2;
-	public static JOptionPane closeRatePane;
+	public static JPanel panel, panel2, panel3, panel4, panel5, panel6, recordsPanel1, recordsPanel2,
+			addRecordPanel1;
+	public static JOptionPane closeRatePane, recordAddedPane;
 	public static ImageIcon handshakeImage;
 	public static ImageIcon mainPanePic;
 	public static BufferedImage myPicture;
@@ -146,12 +150,14 @@ public class CommCalcGui extends JFrame implements ActionListener {
 
 		submitButton = new JButton("Submit");
 		submitButton.setPreferredSize(new Dimension(250, 40));
+		submitButton.setFont(new Font("Arial", Font.PLAIN, 20));
 		submitButton.setBackground(Color.yellow);
 		submitButton.setFocusable(false);
 		submitButton.addActionListener(this);
 		noSaleButton = new JButton("No Sale");
+		noSaleButton.setFont(new Font("Arial", Font.PLAIN, 20));
 		noSaleButton.setPreferredSize(new Dimension(250, 40));
-		noSaleButton.setBackground(Color.lightGray);
+		noSaleButton.setBackground(Color.red);
 		noSaleButton.setFocusable(false);
 		noSaleButton.addActionListener(this);
 		viewRecordsButton = new JButton("View/Add/Delete Records");
@@ -169,6 +175,12 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		deleteRecordButton.setBackground(Color.yellow);
 		deleteRecordButton.setFocusable(false);
 		deleteRecordButton.addActionListener(this);
+		recordSubmitButton = new JButton("Submit");
+		recordSubmitButton.setPreferredSize(new Dimension(250, 40));
+		recordSubmitButton.setBackground(Color.yellow);
+		recordSubmitButton.setFocusable(false);
+		recordSubmitButton.addActionListener(this);
+		
 
 		closeRatePane = new JOptionPane();
 		closeRatePane.setPreferredSize(new Dimension(50, 20));
@@ -205,6 +217,10 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		recordsPanel2.setPreferredSize(new Dimension(800, 55));
 		recordsPanel2.setLayout(new FlowLayout());
 		recordsPanel2.setBackground(Color.black);
+		addRecordPanel1 = new JPanel();
+		addRecordPanel1.setPreferredSize(new Dimension(500, 600));
+		addRecordPanel1.setLayout(new FlowLayout());
+		addRecordPanel1.setBackground(Color.black);
 
 		panel.add(nameField);
 		panel.add(productField);
@@ -216,8 +232,8 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		panel2.add(monthlyCommissionLabel);
 		panel2.add(monthlySalesLabel);
 		panel2.add(closeRateLabel);
-		panel2.add(noSaleButton);
 		panel2.add(submitButton);
+		panel2.add(noSaleButton);
 		panel3.add(commissionDescriptionLabel);
 		panel3.add(monthlyCommissionDescriptionLabel);
 		panel3.add(monthlySalesDescriptionLabel);
@@ -267,7 +283,6 @@ public class CommCalcGui extends JFrame implements ActionListener {
 			try {
 				CommCalc.addCurrentMonthCommissionsFromDB();
 			} catch (ClassNotFoundException | SQLException e3) {
-				// TODO Auto-generated catch block
 				e3.printStackTrace();
 			}
 
@@ -277,7 +292,6 @@ public class CommCalcGui extends JFrame implements ActionListener {
 			try {
 				CommCalc.addCurrentMonthSalesFromDB();
 			} catch (ClassNotFoundException | SQLException e2) {
-				// TODO Auto-generated catch block
 				e2.printStackTrace();
 			}
 
@@ -287,14 +301,12 @@ public class CommCalcGui extends JFrame implements ActionListener {
 			try {
 				CommCalc.putDBData();
 			} catch (ClassNotFoundException | SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 
 			try {
 				CommCalc.getCloseRateFromDB();
 			} catch (ClassNotFoundException | SQLException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 
@@ -331,19 +343,68 @@ public class CommCalcGui extends JFrame implements ActionListener {
 			
 			CommCalc.createRecordsTable();
 
-			pane = new JScrollPane(table);
-			pane.setPreferredSize(new Dimension(775, 525));
-			
 			recordsPanel1.add(pane);
 			recordsPanel2.add(addRecordButton);
 			recordsPanel2.add(deleteRecordButton);
 			recordsFrame.add(recordsPanel1);
 			recordsFrame.add(recordsPanel2);
-			recordsFrame.setPreferredSize(new Dimension(830, 630));
+			recordsFrame.setPreferredSize(new Dimension(830, 640));
 			recordsFrame.pack();
 			recordsFrame.setLocationRelativeTo(null);
 			recordsFrame.setVisible(true);
 
+		}
+		
+		else if (e.getSource() == addRecordButton) {
+			
+			addRecordPanel1.add(nameLabel);
+			addRecordPanel1.add(nameField);
+			addRecordPanel1.add(productLabel);
+			addRecordPanel1.add(productField);
+			addRecordPanel1.add(commentsLabel);
+			addRecordPanel1.add(commentsField);
+			addRecordPanel1.add(bookLabel);
+			addRecordPanel1.add(bookField);
+			addRecordPanel1.add(soldForLabel);
+			addRecordPanel1.add(soldForField);
+			addRecordPanel1.add(recordSubmitButton);
+			
+			addRecordFrame = new JFrame();
+			addRecordFrame.add(addRecordPanel1);
+			addRecordFrame.setPreferredSize(new Dimension(430, 320));
+			addRecordFrame.pack();
+			addRecordFrame.setLocationRelativeTo(null);
+			addRecordFrame.setVisible(true);
+			
+		}
+		
+		else if (e.getSource() == recordSubmitButton) {
+			
+			String book0 = bookField.getText();
+			book = Integer.valueOf(book0);
+
+			String sold0 = soldForField.getText();
+			soldFor = Integer.valueOf(sold0);
+
+			name = nameField.getText();
+			product = productField.getText();
+			String commentsStripApostrophes = commentsField.getText().replace("'", "");
+			comments = commentsStripApostrophes;
+			
+			try {
+				CommCalc.putDBData();
+			} catch (ClassNotFoundException | SQLException e1) {
+				e1.printStackTrace();
+			}
+			
+			recordAddedPane = new JOptionPane();
+			recordAddedPane.setPreferredSize(new Dimension(50, 20));
+			recordAddedPane.showMessageDialog(addRecordFrame, "Record added!");
+			recordAddedPane.setVisible(true);
+			
+			addRecordFrame.dispose();
+			
+			
 		}
 
 	}
