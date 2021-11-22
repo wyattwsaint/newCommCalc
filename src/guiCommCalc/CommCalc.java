@@ -272,9 +272,17 @@ public class CommCalc {
 		return CommCalcGui.table;
 	}
 	
-	static void addRecord() {
+	static void deleteRecord() throws ClassNotFoundException, SQLException {
 		
-		
+		int idNumber = CommCalcGui.idNumber;
+		Connection conn = null;
+		Statement stmt = null;
+		int sold = 1;
+		Class.forName("org.mariadb.jdbc.Driver");
+		conn = DriverManager.getConnection("jdbc:mariadb://127.0.0.1/commcalc", "root", "root");
+		stmt = conn.createStatement();
+		String sql = "DELETE FROM commcalctable where id = " + idNumber;
+		stmt.executeUpdate(sql);
 		
 	}
 

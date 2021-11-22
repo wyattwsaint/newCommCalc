@@ -29,15 +29,16 @@ public class CommCalcGui extends JFrame implements ActionListener {
 
 	public static JFrame myFrame, recordsFrame, addRecordFrame, deleteRecordFrame;
 	public static String name, product, comments, credit;
-	public static int book, soldFor, commission, totalCommissions, totalSales, notSold, closeRate;
+	public static int book, soldFor, commission, totalCommissions, totalSales, notSold, closeRate, idNumber;
 	public static JButton submitButton, noSaleButton, viewRecordsButton, addRecordButton, deleteRecordButton,
-			recordSubmitButton;
-	public static JTextField bookField, soldForField, nameField, commentsField, productField, creditField;
+			recordSubmitButton, deleteButton;
+	public static JTextField bookField, soldForField, nameField, commentsField, productField, creditField, idNumberField;
 	public static JLabel commissionLabel, monthlyCommissionLabel, monthlySalesLabel, nameLabel, productLabel,
 			commentsLabel, bookLabel, soldForLabel, commissionDescriptionLabel, monthlyCommissionDescriptionLabel,
-			monthlySalesDescriptionLabel, creditLabel, closeRateLabel, closeRateDescriptionLabel, handshakeLabel;
+			monthlySalesDescriptionLabel, creditLabel, closeRateLabel, closeRateDescriptionLabel, handshakeLabel,
+			deleteRecordLabel;
 	public static JPanel panel, panel2, panel3, panel4, panel5, panel6, recordsPanel1, recordsPanel2,
-			addRecordPanel1;
+			addRecordPanel1, deleteRecordPanel1;
 	public static JOptionPane closeRatePane, recordAddedPane;
 	public static ImageIcon handshakeImage;
 	public static ImageIcon mainPanePic;
@@ -83,6 +84,9 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		soldForField = new JTextField("450");
 		soldForField.setPreferredSize(new Dimension(250, 40));
 		soldForField.setHorizontalAlignment(SwingConstants.CENTER);
+		idNumberField = new JTextField("450");
+		idNumberField.setPreferredSize(new Dimension(250, 40));
+		idNumberField.setHorizontalAlignment(SwingConstants.CENTER);
 
 		nameLabel = new JLabel("Name:");
 		nameLabel.setPreferredSize(new Dimension(150, 40));
@@ -147,6 +151,11 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		myPicture = ImageIO.read(new File("C:\\Users\\wmsai\\Desktop\\CommCalc.png"));
 		handshakeLabel = new JLabel(new ImageIcon(myPicture));
 		handshakeLabel.setVerticalAlignment(SwingConstants.CENTER);
+		deleteRecordLabel = new JLabel("Record \"id\" number:");
+		deleteRecordLabel.setPreferredSize(new Dimension(150, 40));
+		deleteRecordLabel.setForeground(Color.yellow);
+		deleteRecordLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		
 
 		submitButton = new JButton("Submit");
 		submitButton.setPreferredSize(new Dimension(250, 40));
@@ -180,6 +189,11 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		recordSubmitButton.setBackground(Color.yellow);
 		recordSubmitButton.setFocusable(false);
 		recordSubmitButton.addActionListener(this);
+		deleteButton = new JButton("Delete");
+		deleteButton.setPreferredSize(new Dimension(250, 40));
+		deleteButton.setBackground(Color.yellow);
+		deleteButton.setFocusable(false);
+		deleteButton.addActionListener(this);
 		
 
 		closeRatePane = new JOptionPane();
@@ -221,6 +235,10 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		addRecordPanel1.setPreferredSize(new Dimension(500, 600));
 		addRecordPanel1.setLayout(new FlowLayout());
 		addRecordPanel1.setBackground(Color.black);
+		deleteRecordPanel1 = new JPanel();
+		deleteRecordPanel1.setPreferredSize(new Dimension(500, 600));
+		deleteRecordPanel1.setLayout(new FlowLayout());
+		deleteRecordPanel1.setBackground(Color.black);
 
 		panel.add(nameField);
 		panel.add(productField);
@@ -404,6 +422,43 @@ public class CommCalcGui extends JFrame implements ActionListener {
 			
 			addRecordFrame.dispose();
 			
+			
+		}
+		
+		else if (e.getSource() == deleteRecordButton) {
+			
+			deleteRecordPanel1.add(deleteRecordLabel);
+			deleteRecordPanel1.add(idNumberField);
+			deleteRecordPanel1.add(deleteButton);
+			
+			
+			deleteRecordFrame = new JFrame();
+			deleteRecordFrame.add(deleteRecordPanel1);
+			deleteRecordFrame.setPreferredSize(new Dimension(430, 140));
+			deleteRecordFrame.pack();
+			deleteRecordFrame.setLocationRelativeTo(null);
+			deleteRecordFrame.setVisible(true);
+			
+		}
+		
+		else if (e.getSource() == deleteButton) {
+			
+			String idNumber1 = idNumberField.getText();
+			idNumber = Integer.valueOf(idNumber1);
+			System.out.println(idNumber);
+			
+			try {
+				CommCalc.deleteRecord();
+			} catch (ClassNotFoundException | SQLException e1) {
+				e1.printStackTrace();
+			}
+			
+			recordAddedPane = new JOptionPane();
+			recordAddedPane.setPreferredSize(new Dimension(50, 20));
+			recordAddedPane.showMessageDialog(deleteRecordFrame, "Record deleted!");
+			recordAddedPane.setVisible(true);
+			
+			deleteRecordFrame.dispose();
 			
 		}
 
