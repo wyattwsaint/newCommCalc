@@ -54,6 +54,7 @@ public class CommCalc {
 
 	static void sendEmail(String messageVariable, String soldStatus) {
 
+			
 		String to = "wmsaint17@gmail.com";
 		String from = "wyatt.saint@aspenwindows.com";
 		String host = "smtp.gmail.com";
@@ -80,6 +81,8 @@ public class CommCalc {
 		} catch (MessagingException mex) {
 			mex.printStackTrace();
 		}
+		
+		CommCalcGui.panel3.add(CommCalcGui.emailSentLabel);
 
 	}
 

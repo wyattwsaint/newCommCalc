@@ -28,7 +28,7 @@ import javax.swing.table.TableModel;
 public class CommCalcGui extends JFrame implements ActionListener {
 
 	public static JFrame myFrame, recordsFrame, addRecordFrame, deleteRecordFrame;
-	public static String name, product, comments, credit;
+	public static String name, product, comments, credit, emailMessage, emailSubject;
 	public static int book, soldFor, commission, totalCommissions, totalSales, notSold, closeRate, idNumber;
 	public static JButton submitButton, noSaleButton, viewRecordsButton, addRecordButton, deleteRecordButton,
 			recordSubmitButton, deleteButton;
@@ -36,7 +36,7 @@ public class CommCalcGui extends JFrame implements ActionListener {
 	public static JLabel commissionLabel, monthlyCommissionLabel, monthlySalesLabel, nameLabel, productLabel,
 			commentsLabel, bookLabel, soldForLabel, commissionDescriptionLabel, monthlyCommissionDescriptionLabel,
 			monthlySalesDescriptionLabel, creditLabel, closeRateLabel, closeRateDescriptionLabel, handshakeLabel,
-			deleteRecordLabel;
+			deleteRecordLabel, emailSentLabel;
 	public static JPanel panel, panel2, panel3, panel4, panel5, panel6, recordsPanel1, recordsPanel2,
 			addRecordPanel1, deleteRecordPanel1;
 	public static JOptionPane closeRatePane, recordAddedPane;
@@ -155,7 +155,12 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		deleteRecordLabel.setPreferredSize(new Dimension(150, 40));
 		deleteRecordLabel.setForeground(Color.yellow);
 		deleteRecordLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		
+		emailSentLabel = new JLabel("Email sent");
+		emailSentLabel.setPreferredSize(new Dimension(150, 40));
+		emailSentLabel.setBackground(Color.black);
+		emailSentLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+		emailSentLabel.setForeground(Color.green);
+		emailSentLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
 		submitButton = new JButton("Submit");
 		submitButton.setPreferredSize(new Dimension(250, 40));
@@ -330,6 +335,15 @@ public class CommCalcGui extends JFrame implements ActionListener {
 
 			String closeRateString = String.valueOf(closeRate);
 			closeRateLabel.setText(closeRateString + "%");
+			
+			String preMessage = "Commission is " + commission + "! I sold it for " + soldFor + "! Our total monthly "
+					+ "commission is " + totalCommissions + ". Our total monthly sales are " + totalSales + ".";
+			String preSubject = "SOOOOOOLD!!";
+			
+			emailMessage = preMessage;
+			emailSubject = preSubject;
+			
+			CommCalc.sendEmail(emailMessage, emailSubject);
 
 		}
 
@@ -353,8 +367,17 @@ public class CommCalcGui extends JFrame implements ActionListener {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-
+			
+			String preMessage = "We'll get the next one.";
+			String preSubject = "No sale my heart :(";
+			
+			emailMessage = preMessage;
+			emailSubject = preSubject;
+			
+			CommCalc.sendEmail(emailMessage, emailSubject);
+			
 			myFrame.dispose();
+
 		}
 
 		else if (e.getSource() == viewRecordsButton) {
