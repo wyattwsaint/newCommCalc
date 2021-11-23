@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -32,19 +33,21 @@ public class CommCalcGui extends JFrame implements ActionListener {
 	public static int book, soldFor, commission, totalCommissions, totalSales, notSold, closeRate, idNumber;
 	public static JButton submitButton, noSaleButton, viewRecordsButton, addRecordButton, deleteRecordButton,
 			recordSubmitButton, deleteButton;
-	public static JTextField bookField, soldForField, nameField, commentsField, productField, creditField, idNumberField;
+	public static JTextField bookField, soldForField, nameField, commentsField, productField, creditField,
+			idNumberField;
 	public static JLabel commissionLabel, monthlyCommissionLabel, monthlySalesLabel, nameLabel, productLabel,
 			commentsLabel, bookLabel, soldForLabel, commissionDescriptionLabel, monthlyCommissionDescriptionLabel,
 			monthlySalesDescriptionLabel, creditLabel, closeRateLabel, closeRateDescriptionLabel, handshakeLabel,
-			deleteRecordLabel, emailSentLabel;
-	public static JPanel panel, panel2, panel3, panel4, panel5, panel6, recordsPanel1, recordsPanel2,
-			addRecordPanel1, deleteRecordPanel1;
+			deleteRecordLabel, emailSentLabel, financingLabel;
+	public static JPanel panel, panel2, panel3, panel4, panel5, panel6, recordsPanel1, recordsPanel2, addRecordPanel1,
+			deleteRecordPanel1, financingPanel;
 	public static JOptionPane closeRatePane, recordAddedPane;
 	public static ImageIcon handshakeImage;
 	public static ImageIcon mainPanePic;
 	public static BufferedImage myPicture;
 	public static JScrollPane pane;
 	public static JTable table;
+	public static JCheckBox financingCheckBox;
 
 	CommCalcGui() throws IOException {
 
@@ -161,6 +164,10 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		emailSentLabel.setFont(new Font("Arial", Font.PLAIN, 20));
 		emailSentLabel.setForeground(Color.green);
 		emailSentLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		financingLabel = new JLabel("Check if financing:");
+		financingLabel.setPreferredSize(new Dimension(170, 30));
+		financingLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+		financingLabel.setForeground(Color.yellow);
 
 		submitButton = new JButton("Submit");
 		submitButton.setPreferredSize(new Dimension(250, 40));
@@ -199,7 +206,11 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		deleteButton.setBackground(Color.yellow);
 		deleteButton.setFocusable(false);
 		deleteButton.addActionListener(this);
-		
+
+		financingCheckBox = new JCheckBox();
+		financingCheckBox.setPreferredSize(new Dimension(30, 30));
+		financingCheckBox.setBackground(Color.black);
+		financingCheckBox.addActionListener(this);
 
 		closeRatePane = new JOptionPane();
 		closeRatePane.setPreferredSize(new Dimension(50, 20));
@@ -244,6 +255,9 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		deleteRecordPanel1.setPreferredSize(new Dimension(500, 600));
 		deleteRecordPanel1.setLayout(new FlowLayout());
 		deleteRecordPanel1.setBackground(Color.black);
+		financingPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		financingPanel.setPreferredSize(new Dimension(535, 40));
+		financingPanel.setBackground(Color.black);
 
 		panel.add(nameField);
 		panel.add(productField);
@@ -274,7 +288,11 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		panel5.add(panel3);
 		panel5.add(panel2);
 
+		financingPanel.add(financingLabel);
+		financingPanel.add(financingCheckBox);
+
 		panel6.add(handshakeLabel);
+		panel6.add(financingPanel);
 
 		myFrame.add(panel5);
 		myFrame.add(panel6);
@@ -287,6 +305,8 @@ public class CommCalcGui extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == submitButton) {
 
+			boolean checkedOrNot = financingCheckBox.isSelected();
+			
 			String book0 = bookField.getText();
 			book = Integer.valueOf(book0);
 
@@ -298,7 +318,7 @@ public class CommCalcGui extends JFrame implements ActionListener {
 			String commentsStripApostrophes = commentsField.getText().replace("'", "");
 			comments = commentsStripApostrophes;
 
-			CommCalc.commissionCalculation(book, soldFor);
+			CommCalc.commissionCalculation(book, soldFor, checkedOrNot);
 
 			String commissionString = String.valueOf(commission);
 			commissionLabel.setText(commissionString);
@@ -335,14 +355,14 @@ public class CommCalcGui extends JFrame implements ActionListener {
 
 			String closeRateString = String.valueOf(closeRate);
 			closeRateLabel.setText(closeRateString + "%");
-			
+
 			String preMessage = "Commission is " + commission + "! I sold it for " + soldFor + "! Our total monthly "
 					+ "commission is " + totalCommissions + ". Our total monthly sales are " + totalSales + ".";
 			String preSubject = "SOOOOOOLD!!";
-			
+
 			emailMessage = preMessage;
 			emailSubject = preSubject;
-			
+
 			CommCalc.sendEmail(emailMessage, emailSubject);
 
 		}
@@ -367,21 +387,21 @@ public class CommCalcGui extends JFrame implements ActionListener {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			
+
 			String preMessage = "We'll get the next one.";
 			String preSubject = "No sale my heart :(";
-			
+
 			emailMessage = preMessage;
 			emailSubject = preSubject;
-			
+
 			CommCalc.sendEmail(emailMessage, emailSubject);
-			
+
 			myFrame.dispose();
 
 		}
 
 		else if (e.getSource() == viewRecordsButton) {
-			
+
 			CommCalc.createRecordsTable();
 
 			recordsPanel1.add(pane);
@@ -395,9 +415,9 @@ public class CommCalcGui extends JFrame implements ActionListener {
 			recordsFrame.setVisible(true);
 
 		}
-		
+
 		else if (e.getSource() == addRecordButton) {
-			
+
 			addRecordPanel1.add(nameLabel);
 			addRecordPanel1.add(nameField);
 			addRecordPanel1.add(productLabel);
@@ -409,18 +429,18 @@ public class CommCalcGui extends JFrame implements ActionListener {
 			addRecordPanel1.add(soldForLabel);
 			addRecordPanel1.add(soldForField);
 			addRecordPanel1.add(recordSubmitButton);
-			
+
 			addRecordFrame = new JFrame();
 			addRecordFrame.add(addRecordPanel1);
 			addRecordFrame.setPreferredSize(new Dimension(430, 320));
 			addRecordFrame.pack();
 			addRecordFrame.setLocationRelativeTo(null);
 			addRecordFrame.setVisible(true);
-			
+
 		}
-		
+
 		else if (e.getSource() == recordSubmitButton) {
-			
+
 			String book0 = bookField.getText();
 			book = Integer.valueOf(book0);
 
@@ -431,58 +451,56 @@ public class CommCalcGui extends JFrame implements ActionListener {
 			product = productField.getText();
 			String commentsStripApostrophes = commentsField.getText().replace("'", "");
 			comments = commentsStripApostrophes;
-			
+
 			try {
 				CommCalc.putDBData();
 			} catch (ClassNotFoundException | SQLException e1) {
 				e1.printStackTrace();
 			}
-			
+
 			recordAddedPane = new JOptionPane();
 			recordAddedPane.setPreferredSize(new Dimension(50, 20));
 			recordAddedPane.showMessageDialog(addRecordFrame, "Record added!");
 			recordAddedPane.setVisible(true);
-			
+
 			addRecordFrame.dispose();
-			
-			
+
 		}
-		
+
 		else if (e.getSource() == deleteRecordButton) {
-			
+
 			deleteRecordPanel1.add(deleteRecordLabel);
 			deleteRecordPanel1.add(idNumberField);
 			deleteRecordPanel1.add(deleteButton);
-			
-			
+
 			deleteRecordFrame = new JFrame();
 			deleteRecordFrame.add(deleteRecordPanel1);
 			deleteRecordFrame.setPreferredSize(new Dimension(430, 140));
 			deleteRecordFrame.pack();
 			deleteRecordFrame.setLocationRelativeTo(null);
 			deleteRecordFrame.setVisible(true);
-			
+
 		}
-		
+
 		else if (e.getSource() == deleteButton) {
-			
+
 			String idNumber1 = idNumberField.getText();
 			idNumber = Integer.valueOf(idNumber1);
 			System.out.println(idNumber);
-			
+
 			try {
 				CommCalc.deleteRecord();
 			} catch (ClassNotFoundException | SQLException e1) {
 				e1.printStackTrace();
 			}
-			
+
 			recordAddedPane = new JOptionPane();
 			recordAddedPane.setPreferredSize(new Dimension(50, 20));
 			recordAddedPane.showMessageDialog(deleteRecordFrame, "Record deleted!");
 			recordAddedPane.setVisible(true);
-			
+
 			deleteRecordFrame.dispose();
-			
+
 		}
 
 	}

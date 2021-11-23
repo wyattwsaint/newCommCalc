@@ -33,20 +33,34 @@ public class CommCalc {
 	static int zeros;
 	static int ones;
 	static String date;
+	static double financing = 0.0;
 
 	public static void main(String[] args) throws IOException {
 
 		CommCalcGui run = new CommCalcGui();
 	}
 
-	public static int commissionCalculation(int book, int soldFor) {
-
+	public static int commissionCalculation(int book, int soldFor, boolean checkedOrNot) {
+		
+		if (checkedOrNot == true) {
+			financing = 0.07;
+		}
+		else if (checkedOrNot == false) {
+			financing = 0.0;
+		}
+		
+		double commCalc3 = 0.0;
 		int commCalc = book - soldFor;
 		double intConvert = Double.valueOf(commCalc);
 		double commCalc0 = intConvert / book;
-		double commCalc1 = .48 - commCalc0;
-		double commCalc2 = commCalc1 / 2;
-		double commCalc3 = commCalc2 * soldFor * .7;
+		double commCalc1 = .48 - commCalc0 - financing;
+		if (commCalc1 > 0) {
+			double commCalc2 = commCalc1 / 2;
+			commCalc3 = commCalc2 * soldFor * .7;
+		}
+		else if (commCalc1 < 0) {
+			commCalc3 = 0.0;
+		}
 		CommCalcGui.commission = (int) commCalc3;
 		return CommCalcGui.commission;
 
