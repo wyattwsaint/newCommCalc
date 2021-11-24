@@ -11,7 +11,10 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -38,12 +41,12 @@ public class CommCalcGui extends JFrame implements ActionListener {
 	public static JLabel commissionLabel, monthlyCommissionLabel, monthlySalesLabel, nameLabel, productLabel,
 			commentsLabel, bookLabel, soldForLabel, commissionDescriptionLabel, monthlyCommissionDescriptionLabel,
 			monthlySalesDescriptionLabel, creditLabel, closeRateLabel, closeRateDescriptionLabel, handshakeLabel,
-			deleteRecordLabel, emailSentLabel, financingLabel;
+			deleteRecordLabel, emailSentLabel, financingLabel, monthlyBonusLabel, monthlyBonusDescriptionLabel,
+			logoLabel1, logoLabel2, logoLabel3;
 	public static JPanel panel, panel2, panel3, panel4, panel5, panel6, recordsPanel1, recordsPanel2, addRecordPanel1,
-			deleteRecordPanel1, financingPanel;
+			deleteRecordPanel1, financingPanel, logoPanel, logoPanel1, logoPanel2, logoPanel3;
 	public static JOptionPane closeRatePane, recordAddedPane;
-	public static ImageIcon handshakeImage;
-	public static ImageIcon mainPanePic;
+	public static ImageIcon handshakeImage, mainPanePic;
 	public static BufferedImage myPicture;
 	public static JScrollPane pane;
 	public static JTable table;
@@ -57,7 +60,7 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		myFrame.setLayout(new FlowLayout(FlowLayout.LEFT));
 		myFrame.setTitle("CommCalc");
-		myFrame.setPreferredSize(new Dimension(1100, 650));
+		myFrame.setPreferredSize(new Dimension(1100, 690));
 		myFrame.getContentPane().setBackground(Color.black);
 		myFrame.setResizable(false);
 		myFrame.setIconImage(mainPanePic.getImage());
@@ -132,21 +135,29 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		creditLabel.setForeground(Color.yellow);
 		creditLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		commissionLabel = new JLabel();
+		commissionLabel.setOpaque(true);
+		commissionLabel.setBackground(Color.darkGray);
 		commissionLabel.setPreferredSize(new Dimension(250, 40));
 		commissionLabel.setFont(new Font("Serif", Font.PLAIN, 25));
 		commissionLabel.setForeground(Color.yellow);
 		commissionLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		monthlyCommissionLabel = new JLabel();
+		monthlyCommissionLabel.setOpaque(true);
+		monthlyCommissionLabel.setBackground(Color.darkGray);
 		monthlyCommissionLabel.setPreferredSize(new Dimension(250, 40));
 		monthlyCommissionLabel.setFont(new Font("Serif", Font.PLAIN, 25));
 		monthlyCommissionLabel.setForeground(Color.yellow);
 		monthlyCommissionLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		monthlySalesLabel = new JLabel();
+		monthlySalesLabel.setOpaque(true);
+		monthlySalesLabel.setBackground(Color.darkGray);
 		monthlySalesLabel.setPreferredSize(new Dimension(250, 40));
 		monthlySalesLabel.setFont(new Font("Serif", Font.PLAIN, 25));
 		monthlySalesLabel.setForeground(Color.yellow);
 		monthlySalesLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		closeRateLabel = new JLabel();
+		closeRateLabel.setOpaque(true);		
+		closeRateLabel.setBackground(Color.darkGray);
 		closeRateLabel.setPreferredSize(new Dimension(250, 40));
 		closeRateLabel.setFont(new Font("Serif", Font.PLAIN, 25));
 		closeRateLabel.setForeground(Color.yellow);
@@ -160,7 +171,6 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		deleteRecordLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		emailSentLabel = new JLabel("Email sent");
 		emailSentLabel.setPreferredSize(new Dimension(150, 40));
-		emailSentLabel.setBackground(Color.black);
 		emailSentLabel.setFont(new Font("Arial", Font.PLAIN, 20));
 		emailSentLabel.setForeground(Color.green);
 		emailSentLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -168,6 +178,30 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		financingLabel.setPreferredSize(new Dimension(170, 30));
 		financingLabel.setFont(new Font("Arial", Font.PLAIN, 20));
 		financingLabel.setForeground(Color.yellow);
+		monthlyBonusLabel = new JLabel();
+		monthlyBonusLabel.setOpaque(true);
+		monthlyBonusLabel.setBackground(Color.darkGray);
+		monthlyBonusLabel.setPreferredSize(new Dimension(250, 40));
+		monthlyBonusLabel.setFont(new Font("Serif", Font.PLAIN, 25));
+		monthlyBonusLabel.setForeground(Color.yellow);
+		monthlyBonusLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		monthlyBonusDescriptionLabel = new JLabel("Monthly bonus:");
+		monthlyBonusDescriptionLabel.setPreferredSize(new Dimension(150, 40));
+		monthlyBonusDescriptionLabel.setForeground(Color.yellow);
+		monthlyBonusDescriptionLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		logoLabel1 = new JLabel("$");
+		logoLabel1.setPreferredSize(new Dimension(500, 170));
+		logoLabel1.setHorizontalAlignment(SwingConstants.CENTER);
+		logoLabel1.setVerticalAlignment(SwingConstants.BOTTOM);
+		logoLabel1.setVerticalTextPosition(SwingConstants.BOTTOM);
+		logoLabel1.setFont(new Font("Stencil", Font.PLAIN, 170));
+		logoLabel1.setForeground(Color.green);
+		logoLabel3 = new JLabel("Comm Calc!");
+		logoLabel3.setPreferredSize(new Dimension(500, 95));
+		logoLabel3.setHorizontalAlignment(SwingConstants.CENTER);
+		logoLabel3.setFont(new Font("Showcard Gothic", Font.PLAIN, 50));
+		logoLabel3.setForeground(Color.green);
+		
 
 		submitButton = new JButton("Submit");
 		submitButton.setPreferredSize(new Dimension(250, 40));
@@ -220,11 +254,11 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		panel.setLayout(new FlowLayout());
 		panel.setBackground(Color.black);
 		panel2 = new JPanel();
-		panel2.setPreferredSize(new Dimension(300, 300));
+		panel2.setPreferredSize(new Dimension(300, 340));
 		panel2.setLayout(new FlowLayout());
 		panel2.setBackground(Color.black);
 		panel3 = new JPanel();
-		panel3.setPreferredSize(new Dimension(200, 300));
+		panel3.setPreferredSize(new Dimension(200, 340));
 		panel3.setLayout(new FlowLayout());
 		panel3.setBackground(Color.black);
 		panel4 = new JPanel();
@@ -258,7 +292,23 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		financingPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		financingPanel.setPreferredSize(new Dimension(535, 40));
 		financingPanel.setBackground(Color.black);
-
+		logoPanel = new JPanel();
+		logoPanel.setPreferredSize(new Dimension(535, 500));
+		logoPanel.setLayout(new FlowLayout());
+		logoPanel.setBackground(Color.black);
+		logoPanel1 = new JPanel();
+		logoPanel1.setPreferredSize(new Dimension(535, 145));
+		logoPanel1.setLayout(new FlowLayout(FlowLayout.CENTER));
+		logoPanel1.setBackground(Color.black);
+		logoPanel2 = new JPanel();
+		logoPanel2.setPreferredSize(new Dimension(535, 245));
+		logoPanel2.setLayout(new FlowLayout(FlowLayout.CENTER));
+		logoPanel2.setBackground(Color.black);
+		logoPanel3 = new JPanel();
+		logoPanel3.setPreferredSize(new Dimension(535, 95));
+		logoPanel3.setLayout(new FlowLayout(FlowLayout.CENTER));
+		logoPanel3.setBackground(Color.black);
+		
 		panel.add(nameField);
 		panel.add(productField);
 		panel.add(commentsField);
@@ -269,12 +319,14 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		panel2.add(monthlyCommissionLabel);
 		panel2.add(monthlySalesLabel);
 		panel2.add(closeRateLabel);
+		panel2.add(monthlyBonusLabel);
 		panel2.add(submitButton);
 		panel2.add(noSaleButton);
 		panel3.add(commissionDescriptionLabel);
 		panel3.add(monthlyCommissionDescriptionLabel);
 		panel3.add(monthlySalesDescriptionLabel);
 		panel3.add(closeRateDescriptionLabel);
+		panel3.add(monthlyBonusDescriptionLabel);
 		panel3.add(viewRecordsButton);
 		panel4.add(nameLabel);
 		panel4.add(productLabel);
@@ -290,8 +342,16 @@ public class CommCalcGui extends JFrame implements ActionListener {
 
 		financingPanel.add(financingLabel);
 		financingPanel.add(financingCheckBox);
-
-		panel6.add(handshakeLabel);
+		
+		
+		logoPanel1.add(logoLabel1);
+		logoPanel2.add(handshakeLabel);
+		logoPanel3.add(logoLabel3);
+		logoPanel.add(logoPanel1);
+		logoPanel.add(logoPanel2);
+		logoPanel.add(logoPanel3);
+		
+		panel6.add(logoPanel);
 		panel6.add(financingPanel);
 
 		myFrame.add(panel5);

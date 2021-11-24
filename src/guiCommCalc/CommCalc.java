@@ -3,6 +3,7 @@ package guiCommCalc;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
