@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
@@ -301,6 +303,78 @@ public class CommCalc {
 		stmt = conn.createStatement();
 		String sql = "DELETE FROM commcalctable where id = " + idNumber;
 		stmt.executeUpdate(sql);
+		
+	}
+	
+	static void monthlyBonus() {
+		
+		if (CommCalcGui.totalSales > 0 && CommCalcGui.totalSales < 60000) {
+			int bonus = 0;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 60000 && CommCalcGui.totalSales < 70000) {
+			int bonus = 800;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 70000 && CommCalcGui.totalSales < 80000) {
+			int bonus = 1200;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 80000 && CommCalcGui.totalSales < 90000) {
+			int bonus = 1500;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 90000 && CommCalcGui.totalSales < 100000) {
+			int bonus = 1700;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 100000 && CommCalcGui.totalSales < 115000) {
+			int bonus = 2000;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 115000 && CommCalcGui.totalSales < 130000) {
+			int bonus = 2200;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 130000 && CommCalcGui.totalSales < 145000) {
+			int bonus = 2400;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 145000 && CommCalcGui.totalSales < 160000) {
+			int bonus = 2600;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 160000 && CommCalcGui.totalSales < 170000) {
+			int bonus = 2800;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 170000 && CommCalcGui.totalSales < 180000) {
+			int bonus = 3200;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 180000 && CommCalcGui.totalSales < 190000) {
+			int bonus = 3500;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 190000 && CommCalcGui.totalSales < 200000) {
+			int bonus = 3700;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 200000 && CommCalcGui.totalSales < 215000) {
+			int bonus = 4000;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 215000 && CommCalcGui.totalSales < 230000) {
+			int bonus = 4200;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 230000 && CommCalcGui.totalSales < 245000) {
+			int bonus = 4400;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 245000 && CommCalcGui.totalSales < 260000) {
+			int bonus = 4600;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 260000 && CommCalcGui.totalSales < 270000) {
+			int bonus = 4800;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 270000 && CommCalcGui.totalSales < 280000) {
+			int bonus = 5200;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 280000 && CommCalcGui.totalSales < 290000) {
+			int bonus = 5500;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else if (CommCalcGui.totalSales >= 290000 && CommCalcGui.totalSales < 300000) {
+			int bonus = 5700;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		} else {
+			int bonus = 6000;
+			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
+		}
 		
 	}
 

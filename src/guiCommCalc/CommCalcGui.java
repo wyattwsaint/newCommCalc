@@ -415,9 +415,12 @@ public class CommCalcGui extends JFrame implements ActionListener {
 
 			String closeRateString = String.valueOf(closeRate);
 			closeRateLabel.setText(closeRateString + "%");
+			
+			CommCalc.monthlyBonus();
 
 			String preMessage = "Commission is " + commission + "! I sold it for " + soldFor + "! Our total monthly "
-					+ "commission is " + totalCommissions + ". Our total monthly sales are " + totalSales + ".";
+					+ "commission is " + totalCommissions + ". Our total monthly sales are " + totalSales + ". " + 
+					"Current monthly bonus is: " + monthlyBonusLabel.getText();
 			String preSubject = "SOOOOOOLD!!";
 
 			emailMessage = preMessage;
