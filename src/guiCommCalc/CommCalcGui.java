@@ -54,7 +54,7 @@ public class CommCalcGui extends JFrame implements ActionListener {
 
 	CommCalcGui() throws IOException {
 
-		mainPanePic = new ImageIcon("C:\\Users\\wmsai\\Desktop\\CommCalc.png");
+		mainPanePic = new ImageIcon("C:\\Users\\wmsai\\Desktop\\Java Projects\\CommCalc2\\CommCalc.png");
 
 		myFrame = new JFrame();
 		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -72,25 +72,25 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		recordsFrame.setResizable(true);
 		recordsFrame.setIconImage(mainPanePic.getImage());
 
-		nameField = new JTextField("Name");
+		nameField = new JTextField();
 		nameField.setPreferredSize(new Dimension(250, 40));
 		nameField.setHorizontalAlignment(SwingConstants.CENTER);
-		creditField = new JTextField("Credit");
+		creditField = new JTextField();
 		creditField.setPreferredSize(new Dimension(250, 40));
 		creditField.setHorizontalAlignment(SwingConstants.CENTER);
-		productField = new JTextField("Product");
+		productField = new JTextField();
 		productField.setPreferredSize(new Dimension(250, 40));
 		productField.setHorizontalAlignment(SwingConstants.CENTER);
-		commentsField = new JTextField("Comments");
+		commentsField = new JTextField();
 		commentsField.setPreferredSize(new Dimension(250, 40));
 		commentsField.setHorizontalAlignment(SwingConstants.CENTER);
-		bookField = new JTextField("500");
+		bookField = new JTextField();
 		bookField.setPreferredSize(new Dimension(250, 40));
 		bookField.setHorizontalAlignment(SwingConstants.CENTER);
-		soldForField = new JTextField("450");
+		soldForField = new JTextField();
 		soldForField.setPreferredSize(new Dimension(250, 40));
 		soldForField.setHorizontalAlignment(SwingConstants.CENTER);
-		idNumberField = new JTextField("450");
+		idNumberField = new JTextField();
 		idNumberField.setPreferredSize(new Dimension(250, 40));
 		idNumberField.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -162,7 +162,7 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		closeRateLabel.setFont(new Font("Serif", Font.PLAIN, 25));
 		closeRateLabel.setForeground(Color.yellow);
 		closeRateLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		myPicture = ImageIO.read(new File("C:\\Users\\wmsai\\Desktop\\CommCalc.png"));
+		myPicture = ImageIO.read(new File("C:\\Users\\wmsai\\Desktop\\Java Projects\\CommCalc2\\CommCalc.png"));
 		handshakeLabel = new JLabel(new ImageIcon(myPicture));
 		handshakeLabel.setVerticalAlignment(SwingConstants.CENTER);
 		deleteRecordLabel = new JLabel("Record \"id\" number:");

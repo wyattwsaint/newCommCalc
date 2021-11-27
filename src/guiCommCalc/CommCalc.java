@@ -38,9 +38,24 @@ public class CommCalc {
 	static String date;
 	static double financing = 0.0;
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ClassNotFoundException, SQLException {
 
+		
 		CommCalcGui run = new CommCalcGui();
+		
+		addCurrentMonthCommissionsFromDB();
+		String monthlyCommissions = String.valueOf(CommCalcGui.totalCommissions);
+		CommCalcGui.monthlyCommissionLabel.setText(monthlyCommissions);
+		
+		getCloseRateFromDB();
+		String closeRateString = String.valueOf(CommCalcGui.closeRate);
+		CommCalcGui.closeRateLabel.setText(closeRateString + "%");
+		
+		addCurrentMonthSalesFromDB();
+		String monthlySales = String.valueOf(CommCalcGui.totalSales);
+		CommCalcGui.monthlySalesLabel.setText(monthlySales);
+		
+		monthlyBonus();
 	}
 
 	public static int commissionCalculation(int book, int soldFor, boolean checkedOrNot) {
@@ -375,6 +390,10 @@ public class CommCalc {
 			int bonus = 6000;
 			CommCalcGui.monthlyBonusLabel.setText(String.valueOf(bonus));
 		}
+		double taxAdjust = (Integer.valueOf(CommCalcGui.monthlyBonusLabel.getText())) * .7;
+		int taxAdjust1 = (int) taxAdjust;
+		CommCalcGui.monthlyBonusLabel.setText(String.valueOf(taxAdjust1));
+		
 		
 	}
 
