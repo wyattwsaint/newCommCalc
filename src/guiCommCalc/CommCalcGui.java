@@ -382,6 +382,12 @@ public class CommCalcGui extends JFrame implements ActionListener {
 
 			String commissionString = String.valueOf(commission);
 			commissionLabel.setText(commissionString);
+			
+			try {
+				CommCalc.putDBData();
+			} catch (ClassNotFoundException | SQLException e1) {
+				e1.printStackTrace();
+			}
 
 			try {
 				CommCalc.addCurrentMonthCommissionsFromDB();
@@ -400,12 +406,6 @@ public class CommCalcGui extends JFrame implements ActionListener {
 
 			String monthlySales = String.valueOf(totalSales);
 			monthlySalesLabel.setText(monthlySales);
-
-			try {
-				CommCalc.putDBData();
-			} catch (ClassNotFoundException | SQLException e1) {
-				e1.printStackTrace();
-			}
 
 			try {
 				CommCalc.getCloseRateFromDB();
