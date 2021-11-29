@@ -3,9 +3,6 @@ package guiCommCalc;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
@@ -31,6 +28,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
 public class CommCalc {
 
 	static int zeros;
@@ -41,21 +42,14 @@ public class CommCalc {
 	public static void main(String[] args) throws IOException, ClassNotFoundException, SQLException {
 
 		
-		CommCalcGui run = new CommCalcGui();
+		//CommCalcGui run = new CommCalcGui();
 		
-		addCurrentMonthCommissionsFromDB();
-		String monthlyCommissions = String.valueOf(CommCalcGui.totalCommissions);
-		CommCalcGui.monthlyCommissionLabel.setText(monthlyCommissions);
+		//populateData();
 		
-		getCloseRateFromDB();
-		String closeRateString = String.valueOf(CommCalcGui.closeRate);
-		CommCalcGui.closeRateLabel.setText(closeRateString + "%");
+		scrapeData();
 		
-		addCurrentMonthSalesFromDB();
-		String monthlySales = String.valueOf(CommCalcGui.totalSales);
-		CommCalcGui.monthlySalesLabel.setText(monthlySales);
 		
-		monthlyBonus();
+		
 	}
 
 	public static int commissionCalculation(int book, int soldFor, boolean checkedOrNot) {
@@ -222,7 +216,6 @@ public class CommCalc {
 		totalNumberOfSales = zeros + ones;
 		rawCloseRate = ones / totalNumberOfSales * 100;
 		CommCalcGui.closeRate = (int) rawCloseRate;
-		System.out.println(CommCalcGui.closeRate);
 		return CommCalcGui.closeRate;
 
 	}
@@ -394,6 +387,43 @@ public class CommCalc {
 		int taxAdjust1 = (int) taxAdjust;
 		CommCalcGui.monthlyBonusLabel.setText(String.valueOf(taxAdjust1));
 		
+		
+	}
+	
+	static void populateData() throws ClassNotFoundException, SQLException {
+		
+		addCurrentMonthCommissionsFromDB();
+		String monthlyCommissions = String.valueOf(CommCalcGui.totalCommissions);
+		CommCalcGui.monthlyCommissionLabel.setText(monthlyCommissions);
+		
+		getCloseRateFromDB();
+		String closeRateString = String.valueOf(CommCalcGui.closeRate);
+		CommCalcGui.closeRateLabel.setText(closeRateString + "%");
+		
+		addCurrentMonthSalesFromDB();
+		String monthlySales = String.valueOf(CommCalcGui.totalSales);
+		CommCalcGui.monthlySalesLabel.setText(monthlySales);
+		
+		monthlyBonus();
+		
+	}
+	
+	static void scrapeData() {
+		
+		try {
+			String url = "https://app.remotesf.com/login";
+			Document doc = Jsoup.connect(url).maxBodySize(0).get();
+			Elements info = doc.getElementsByTag("div");
+			
+			System.out.println(doc);
+			
+			
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
