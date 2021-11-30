@@ -31,6 +31,9 @@ import javax.swing.table.TableColumnModel;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class CommCalc {
 
@@ -410,20 +413,12 @@ public class CommCalc {
 	
 	static void scrapeData() {
 		
-		try {
-			String url = "https://app.remotesf.com/login";
-			Document doc = Jsoup.connect(url).maxBodySize(0).get();
-			Elements info = doc.getElementsByTag("div");
-			
-			System.out.println(doc);
-			
-			
-			
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		WebDriver driver = new InternetExplorerDriver();
+		
+		WebDriverWait wait = new WebDriverWait(driver, 30);
+		driver.navigate().to("http://app.remotesf.com/login");
+		String loginXPath = "//html//body//div[2]//div//div//div//div[1]//div[2]//form//div[3]//div[1]//button";
 		
 	}
 
