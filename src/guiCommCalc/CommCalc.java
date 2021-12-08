@@ -31,8 +31,12 @@ import javax.swing.table.TableColumnModel;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class CommCalc {
@@ -40,41 +44,52 @@ public class CommCalc {
 	static int zeros;
 	static int ones;
 	static String date;
-	static double financing = 0.0;
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException, SQLException {
 
 		
-		//CommCalcGui run = new CommCalcGui();
+		CommCalcGui run = new CommCalcGui();
 		
-		//populateData();
+		populateData();
 		
-		scrapeData();
+		//scrapeData();
 		
 		
 		
 	}
 
-	public static int commissionCalculation(int book, int soldFor, boolean checkedOrNot) {
+	public static int commissionCalculation(int book, int soldFor, boolean financCheckedOrNot,
+			boolean twoPercentCheckedOrNot, boolean selfGenCheckedOrNot) {
 		
-		if (checkedOrNot == true) {
+		double selfGen = 0.0;
+		double financing = 0.0;
+		double commCalc1_2 = 0.0;
+		
+		if (financCheckedOrNot == true) {
 			financing = 0.07;
 		}
-		else if (checkedOrNot == false) {
-			financing = 0.0;
+		if (selfGenCheckedOrNot == true) {
+			selfGen = .05;
 		}
-		
 		double commCalc3 = 0.0;
 		int commCalc = book - soldFor;
 		double intConvert = Double.valueOf(commCalc);
 		double commCalc0 = intConvert / book;
-		double commCalc1 = .48 - commCalc0 - financing;
-		if (commCalc1 > 0) {
+		double commCalc1 = .48 - commCalc0 - financing + selfGen;
+		if (commCalc1 > .02) {
 			double commCalc2 = commCalc1 / 2;
 			commCalc3 = commCalc2 * soldFor * .7;
 		}
+		else if (commCalc1 <= .02 && commCalc1 >= 0) {
+			commCalc1 = .02 + selfGen;
+			commCalc3 = commCalc1 * soldFor * .7;			
+		}
 		else if (commCalc1 < 0) {
 			commCalc3 = 0.0;
+			if (twoPercentCheckedOrNot == true) {
+				commCalc1_2 = .02 + selfGen;
+				commCalc3 = soldFor * commCalc1_2 * .7;								
+			}
 		}
 		CommCalcGui.commission = (int) commCalc3;
 		return CommCalcGui.commission;
@@ -413,12 +428,12 @@ public class CommCalc {
 	
 	static void scrapeData() {
 		
+		System.setProperty("webdriver.chrome.driver", "C:\\Users\\wmsai\\Downloads\\chromedriver_win32 (2)\\chromedriver.exe");
+
+		WebDriver driver = new ChromeDriver();
 		
-		WebDriver driver = new InternetExplorerDriver();
-		
-		WebDriverWait wait = new WebDriverWait(driver, 30);
-		driver.navigate().to("http://app.remotesf.com/login");
-		String loginXPath = "//html//body//div[2]//div//div//div//div[1]//div[2]//form//div[3]//div[1]//button";
+		driver.get("https://app.remotesf.com/login");
+		String loginXPath = "/html/body/div[2]/div/div/div/div[1]/div[2]/form/div[3]/div[1]/button";
 		
 	}
 

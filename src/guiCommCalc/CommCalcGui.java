@@ -42,15 +42,16 @@ public class CommCalcGui extends JFrame implements ActionListener {
 			commentsLabel, bookLabel, soldForLabel, commissionDescriptionLabel, monthlyCommissionDescriptionLabel,
 			monthlySalesDescriptionLabel, creditLabel, closeRateLabel, closeRateDescriptionLabel, handshakeLabel,
 			deleteRecordLabel, emailSentLabel, financingLabel, monthlyBonusLabel, monthlyBonusDescriptionLabel,
-			logoLabel1, logoLabel2, logoLabel3;
+			logoLabel1, logoLabel2, logoLabel3, twoPercentLabel, selfGenLabel;
 	public static JPanel panel, panel2, panel3, panel4, panel5, panel6, recordsPanel1, recordsPanel2, addRecordPanel1,
-			deleteRecordPanel1, financingPanel, logoPanel, logoPanel1, logoPanel2, logoPanel3;
+			deleteRecordPanel1, financingPanel, logoPanel, logoPanel1, logoPanel2, logoPanel3, checkBoxPanel1,
+			checkBoxPanel2, checkBoxPanel3;
 	public static JOptionPane closeRatePane, recordAddedPane;
 	public static ImageIcon handshakeImage, mainPanePic;
 	public static BufferedImage myPicture;
 	public static JScrollPane pane;
 	public static JTable table;
-	public static JCheckBox financingCheckBox;
+	public static JCheckBox financingCheckBox, twoPercentCheckBox, selfGenCheckBox;
 
 	CommCalcGui() throws IOException {
 
@@ -178,6 +179,14 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		financingLabel.setPreferredSize(new Dimension(170, 30));
 		financingLabel.setFont(new Font("Arial", Font.PLAIN, 20));
 		financingLabel.setForeground(Color.yellow);
+		twoPercentLabel = new JLabel("2% Override:");
+		twoPercentLabel.setPreferredSize(new Dimension(170, 30));
+		twoPercentLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+		twoPercentLabel.setForeground(Color.yellow);
+		selfGenLabel = new JLabel("Self-gen':");
+		selfGenLabel.setPreferredSize(new Dimension(170, 30));
+		selfGenLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+		selfGenLabel.setForeground(Color.yellow);
 		monthlyBonusLabel = new JLabel();
 		monthlyBonusLabel.setOpaque(true);
 		monthlyBonusLabel.setBackground(Color.darkGray);
@@ -245,6 +254,14 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		financingCheckBox.setPreferredSize(new Dimension(30, 30));
 		financingCheckBox.setBackground(Color.black);
 		financingCheckBox.addActionListener(this);
+		twoPercentCheckBox = new JCheckBox();
+		twoPercentCheckBox.setPreferredSize(new Dimension(30, 30));
+		twoPercentCheckBox.setBackground(Color.black);
+		twoPercentCheckBox.addActionListener(this);
+		selfGenCheckBox = new JCheckBox();
+		selfGenCheckBox.setPreferredSize(new Dimension(30, 30));
+		selfGenCheckBox.setBackground(Color.black);
+		selfGenCheckBox.addActionListener(this);
 
 		closeRatePane = new JOptionPane();
 		closeRatePane.setPreferredSize(new Dimension(50, 20));
@@ -290,7 +307,7 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		deleteRecordPanel1.setLayout(new FlowLayout());
 		deleteRecordPanel1.setBackground(Color.black);
 		financingPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		financingPanel.setPreferredSize(new Dimension(535, 40));
+		financingPanel.setPreferredSize(new Dimension(535, 500));
 		financingPanel.setBackground(Color.black);
 		logoPanel = new JPanel();
 		logoPanel.setPreferredSize(new Dimension(535, 500));
@@ -308,6 +325,15 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		logoPanel3.setPreferredSize(new Dimension(535, 95));
 		logoPanel3.setLayout(new FlowLayout(FlowLayout.CENTER));
 		logoPanel3.setBackground(Color.black);
+		checkBoxPanel1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		checkBoxPanel1.setPreferredSize(new Dimension(300, 40));
+		checkBoxPanel1.setBackground(Color.black);
+		checkBoxPanel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		checkBoxPanel2.setPreferredSize(new Dimension(300, 40));
+		checkBoxPanel2.setBackground(Color.black);
+		checkBoxPanel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		checkBoxPanel3.setPreferredSize(new Dimension(300, 40));
+		checkBoxPanel3.setBackground(Color.black);
 		
 		panel.add(nameField);
 		panel.add(productField);
@@ -340,9 +366,15 @@ public class CommCalcGui extends JFrame implements ActionListener {
 		panel5.add(panel3);
 		panel5.add(panel2);
 
-		financingPanel.add(financingLabel);
-		financingPanel.add(financingCheckBox);
-		
+		checkBoxPanel1.add(financingLabel);
+		checkBoxPanel1.add(financingCheckBox);
+		checkBoxPanel2.add(twoPercentLabel);
+		checkBoxPanel2.add(twoPercentCheckBox);
+		checkBoxPanel3.add(selfGenLabel);
+		checkBoxPanel3.add(selfGenCheckBox);
+		financingPanel.add(checkBoxPanel1);
+		financingPanel.add(checkBoxPanel2);
+		financingPanel.add(checkBoxPanel3);
 		
 		logoPanel1.add(logoLabel1);
 		logoPanel2.add(handshakeLabel);
@@ -365,7 +397,10 @@ public class CommCalcGui extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == submitButton) {
 
-			boolean checkedOrNot = financingCheckBox.isSelected();
+			boolean fnnceCheckBox = financingCheckBox.isSelected();
+			boolean twoPrcntCheckBox = twoPercentCheckBox.isSelected();
+			boolean slfGnCheckBox = selfGenCheckBox.isSelected();
+			 
 			
 			String book0 = bookField.getText();
 			book = Integer.valueOf(book0);
@@ -378,7 +413,7 @@ public class CommCalcGui extends JFrame implements ActionListener {
 			String commentsStripApostrophes = commentsField.getText().replace("'", "");
 			comments = commentsStripApostrophes;
 
-			CommCalc.commissionCalculation(book, soldFor, checkedOrNot);
+			CommCalc.commissionCalculation(book, soldFor, fnnceCheckBox, twoPrcntCheckBox, slfGnCheckBox);
 
 			String commissionString = String.valueOf(commission);
 			commissionLabel.setText(commissionString);
